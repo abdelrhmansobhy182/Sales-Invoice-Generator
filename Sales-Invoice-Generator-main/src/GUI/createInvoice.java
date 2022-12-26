@@ -14,7 +14,7 @@ public class createInvoice extends JFrame implements ActionListener {
     private static JTextField CustomerName_f, Date_f;
     private static JButton Create;
     private static JButton Cancel;
-   public static ArrayList<Invoice> Invoices = new ArrayList<Invoice>();
+    public static ArrayList<Invoice> Invoices = new ArrayList<Invoice>();
     public static int Selected_Invoice ;
     public  static Invoice InvoiceTemp;
 
@@ -57,7 +57,7 @@ public class createInvoice extends JFrame implements ActionListener {
         panel.add(Cancel);
     }
 
-    public void createInvoice() {
+    public  void createInvoice() {
         String Name = CustomerName_f.getText().toString();
         String date = Date_f.getText().toString();
         System.out.println(Name);
@@ -71,12 +71,16 @@ public class createInvoice extends JFrame implements ActionListener {
         Date_f.setText(null);
         Home.createInvoice.setVisible(false);
 
+    }
+    public static void loadInvoice(String Name , String date , Float Total)
+    {
 
 
-
-
-
-
+        InvoiceTemp = new Invoice(Name,date);
+        Invoices.add(InvoiceTemp);
+        Object[] newRecord = { InvoiceTemp.Invoice_number, Name, date , Total};
+        Home.InvoiceModel.addRow(newRecord);
+        Home.update(InvoiceTemp.Invoice_number,Date_f.getText(),CustomerName_f.getText(),Total);
 
     }
 

@@ -1,5 +1,5 @@
 package GUI;
-
+import File.FileOperations;
 import Package1.Invoice;
 import Package1.Item;
 import Package1.Main;
@@ -45,10 +45,13 @@ public class Home extends JFrame implements ActionListener {
     public static Object [][] ItemsTableData = {} ;
     JButton Add ;
     JButton Save ;
-    JButton Cancel ;
+    JButton Load ;
     public static createInvoice  createInvoice = new createInvoice();
     public static createItem  createItem = new createItem();
     public static int RowIndex;
+    public FileOperations fileOperations = new FileOperations()  ;
+    private boolean Read = true;
+
 
 
 
@@ -96,10 +99,10 @@ public class Home extends JFrame implements ActionListener {
 
         Save = new JButton("Save");
         Add = new JButton("Add");
-        Cancel = new JButton("Load");
+        Load = new JButton("Load");
         Save.addActionListener(this);
         Add.addActionListener(this);
-        Cancel.addActionListener(this);
+        Load.addActionListener(this);
         RightComponent.add(NumLabel);
         RightComponent.add(NumField);
         RightComponent.add(DateLabel);
@@ -112,7 +115,7 @@ public class Home extends JFrame implements ActionListener {
         RightPanal.add(RightComponent);
         RightPanal.add(new JScrollPane(ItemsTable));
         RightPanal.add(Add);
-        RightPanal.add(Cancel);
+        RightPanal.add(Load);
         RightPanal.add(Save);
         add(RightPanal);
 
@@ -120,13 +123,13 @@ public class Home extends JFrame implements ActionListener {
         setSize(1000,800);
         setLocation(50,50);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-
         InvoiceTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 RowIndex =InvoiceTable.getSelectedRow();
                 removeTable();
                 getItems(RowIndex);
+
 
 
             }
@@ -149,17 +152,24 @@ public class Home extends JFrame implements ActionListener {
         }
         if (e.getSource().equals(Save))
         {
+            Read=true;
 
             for (int i = 0;i<Invoice.Invoice_number;++i)
             {
-                System.out.println(i);
-                Main.saveFile(GUI.createInvoice.Invoices.get(i));
+                System.out.println(GUI.createInvoice.Invoices.get(i).getCustomerName());
+                fileOperations.saveFile(GUI.createInvoice.Invoices.get(i) ,Invoice.Invoice_number );
             }
 
         }
-        else if (e.getSource().equals(Cancel) )
+        else if (e.getSource().equals(Load) && Read==true)
         {
-            Main.loadFile();
+            Home.InvoiceModel.setRowCount(0);
+            Home.ItemModel.setRowCount(0);
+            GUI.createInvoice.Invoices.clear();
+            fileOperations.loadFile();
+            Read=false;
+
+
 
         }
         else if (e.getSource().equals(CreateInvoice) )

@@ -21,7 +21,11 @@ public class Invoice {
         return InvoiceNumber;
     }
 
-    public Invoice(String Name , String date)
+    public static void setInvoice_number(int invoice_number) {
+        Invoice_number = invoice_number;
+    }
+
+    public Invoice(String Name , String date  )
     {
         Invoice_number++;
         this.CustomerName = Name;

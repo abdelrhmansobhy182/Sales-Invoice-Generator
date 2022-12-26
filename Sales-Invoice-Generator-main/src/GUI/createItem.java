@@ -62,7 +62,7 @@ public class createItem extends JFrame implements ActionListener {
 
     }
 
-    public  void createItem()
+    public void createItem()
     {
         String Item = Item_T.getText().toString();
         String Price = Price_T.getText().toString();
@@ -78,6 +78,19 @@ public class createItem extends JFrame implements ActionListener {
         Count_T.setText(null);
         Home.createItem.setVisible(false);
 
+
+    }
+    public static void loadItem(int InvoiceNumber , String Item , String Price , String Count)
+    {
+
+
+        createInvoice.Invoices.get(InvoiceNumber-1).addItems(Item,Integer.parseInt(Price),Integer.parseInt(Count));
+        createInvoice.InvoiceTemp.addItems(Item,Integer.parseInt(Price),Integer.parseInt(Count));
+        int total = Integer.parseInt(Price)*Integer.parseInt(Count);
+        Object[] newRecord = {'0' , Item, Integer.parseInt(Price) , Integer.parseInt(Count) ,total};
+        Home.ItemModel.addRow(newRecord);
+        createInvoice.InvoiceTemp.calculateTotalPrice();
+        Home.InvoiceModel.setValueAt(createInvoice.InvoiceTemp.getTotal_price(),createInvoice.InvoiceTemp.Invoice_number-1,3);
 
     }
 
