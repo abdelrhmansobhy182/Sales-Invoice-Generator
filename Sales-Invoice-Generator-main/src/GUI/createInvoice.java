@@ -91,6 +91,7 @@ public class createInvoice extends JFrame implements ActionListener {
             createInvoice();
 
         } else if (e.getSource().equals(Cancel)) {
+            setVisible(false);
 
         }
     }

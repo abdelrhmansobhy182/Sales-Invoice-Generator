@@ -10,7 +10,7 @@ public class Invoice {
     private String CustomerName;
     private float TotalPrice = 0 ;
     private int ItemIndex = 0;
-    ArrayList<Item> Items = new ArrayList<Item>();
+    public static ArrayList<Item> Items = new ArrayList<Item>();
     private int InvoiceNumber = 0;
 
     public ArrayList<Item> getItems() {

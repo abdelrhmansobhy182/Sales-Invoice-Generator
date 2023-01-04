@@ -80,17 +80,16 @@ public class createItem extends JFrame implements ActionListener {
 
 
     }
-    public static void loadItem(int InvoiceNumber , String Item , String Price , String Count)
+    public static void loadItem(int InvoiceNumber , String Item , String Price , String Count , String Total)
     {
 
 
         createInvoice.Invoices.get(InvoiceNumber-1).addItems(Item,Integer.parseInt(Price),Integer.parseInt(Count));
         createInvoice.InvoiceTemp.addItems(Item,Integer.parseInt(Price),Integer.parseInt(Count));
-        int total = Integer.parseInt(Price)*Integer.parseInt(Count);
-        Object[] newRecord = {'0' , Item, Integer.parseInt(Price) , Integer.parseInt(Count) ,total};
+        Object[] newRecord = {'0' , Item, Integer.parseInt(Price) , Integer.parseInt(Count) ,Integer.parseInt(Total)};
         Home.ItemModel.addRow(newRecord);
         createInvoice.InvoiceTemp.calculateTotalPrice();
-        Home.InvoiceModel.setValueAt(createInvoice.InvoiceTemp.getTotal_price(),createInvoice.InvoiceTemp.Invoice_number-1,3);
+       // Home.InvoiceModel.setValueAt(createInvoice.InvoiceTemp.getTotal_price(),createInvoice.InvoiceTemp.Invoice_number-1,3);
 
     }
 
@@ -106,6 +105,7 @@ public class createItem extends JFrame implements ActionListener {
 
 
         } else if (e.getSource().equals(Cancel)) {
+            setVisible(false);
 
         }
 

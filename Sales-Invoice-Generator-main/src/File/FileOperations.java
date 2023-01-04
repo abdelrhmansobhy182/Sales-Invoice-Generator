@@ -28,8 +28,7 @@ public class FileOperations  {
     {
 
         try {
-            InvoiceHeader = new FileWriter("InvoiceHeader.csv" , true);
-            InvoiceLine = new FileWriter("InvoiceLine.csv" , true);
+
             InvoiceHeader.append(I.getInvoiceNumber() + ",");
             InvoiceHeader.append(I.getCustomerName()+ ",");
             InvoiceHeader.append(I.getDate()+ ",");
@@ -48,6 +47,7 @@ public class FileOperations  {
             {
                 InvoiceHeader.close();
                 InvoiceLine.close();
+                System.out.println("close " + "num : " + I.getInvoiceNumber() + " Size : " + size);
             }
 
 
@@ -67,6 +67,7 @@ public class FileOperations  {
                 String data = myReader.nextLine();
                 String [] NData = data.split(",");
                 createInvoice.loadInvoice(NData[1],NData[2] ,Float.parseFloat(NData[3]) );
+                System.out.println("Invoice Number : " + NData[0] +" Invoice Date : " + NData[1] +" Customer Name : " + NData[2]);
             }
             myReader.close();
             File myObj2 = new File("InvoiceLine.csv");
@@ -74,7 +75,9 @@ public class FileOperations  {
             while (myReader2.hasNextLine()) {
                 String data = myReader2.nextLine();
                 String [] NData = data.split(",");
-                createItem.loadItem(Integer.parseInt(NData[0]),NData[1],NData[2],NData[3]);
+                createItem.loadItem(Integer.parseInt(NData[0]),NData[1],NData[2],NData[3] ,NData[4]);
+
+                System.out.println("Invoice Number : " + NData[0] +" Item Name : " + NData[1] +" Price : " + NData[2]+" Count : " + NData[3]);
             }
             myReader2.close();
 
