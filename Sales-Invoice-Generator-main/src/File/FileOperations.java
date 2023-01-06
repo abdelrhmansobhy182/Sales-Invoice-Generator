@@ -4,20 +4,21 @@ import Package1.Invoice;
 import Package1.Item;
 import GUI.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import javax.swing.*;
+import java.io.*;
+import java.util.Arrays;
 import java.util.Scanner;
 
 
 public class FileOperations  {
     public static FileWriter InvoiceHeader ;
     public static FileWriter InvoiceLine ;
+    public static String FilePath;
     public FileOperations()  {
         try {
             InvoiceHeader = new FileWriter("InvoiceHeader.csv" , true);
             InvoiceLine = new FileWriter("InvoiceLine.csv" , true);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -28,6 +29,10 @@ public class FileOperations  {
     {
 
         try {
+            PrintWriter pw = new PrintWriter(InvoiceHeader);
+            PrintWriter pw2 = new PrintWriter(InvoiceLine);
+            pw.close();
+            pw2.close();
 
             InvoiceHeader.append(I.getInvoiceNumber() + ",");
             InvoiceHeader.append(I.getCustomerName()+ ",");
@@ -57,10 +62,10 @@ public class FileOperations  {
         }
 
     }
-    public static void loadFile ()
+    public static void loadFile (File InvoiceHeader ,File InvoiceLine )
     {
         try {
-            File myObj = new File("InvoiceHeader.csv");
+            File myObj = InvoiceHeader;
             Scanner myReader = new Scanner(myObj);
             Invoice.setInvoice_number(0);
             while (myReader.hasNextLine()) {
@@ -70,7 +75,7 @@ public class FileOperations  {
                 System.out.println("Invoice Number : " + NData[0] +" Invoice Date : " + NData[1] +" Customer Name : " + NData[2]);
             }
             myReader.close();
-            File myObj2 = new File("InvoiceLine.csv");
+            File myObj2 = InvoiceLine;
             Scanner myReader2 = new Scanner(myObj2);
             while (myReader2.hasNextLine()) {
                 String data = myReader2.nextLine();

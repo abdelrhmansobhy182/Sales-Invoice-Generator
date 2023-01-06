@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.ArrayList;
 
 public class Home extends JFrame implements ActionListener {
@@ -51,6 +52,9 @@ public class Home extends JFrame implements ActionListener {
     public static int RowIndex;
     public FileOperations fileOperations = new FileOperations()  ;
     private boolean Read = true;
+    JFileChooser fileChooser1;
+    JFileChooser fileChooser2;
+    File Path1,Path2;
 
 
 
@@ -118,6 +122,10 @@ public class Home extends JFrame implements ActionListener {
         RightPanal.add(Load);
         RightPanal.add(Save);
         add(RightPanal);
+        fileChooser1 =new JFileChooser();
+        fileChooser1.setCurrentDirectory(new File("."));
+        fileChooser2 =new JFileChooser();
+        fileChooser2.setCurrentDirectory(new File("."));
 
 
         setSize(1000,800);
@@ -166,7 +174,17 @@ public class Home extends JFrame implements ActionListener {
             Home.InvoiceModel.setRowCount(0);
             Home.ItemModel.setRowCount(0);
             GUI.createInvoice.Invoices.clear();
-            fileOperations.loadFile();
+            int res = fileChooser1.showDialog(null,"Choose Invoice Header");
+            if (res== JFileChooser.APPROVE_OPTION)
+            {
+                Path1 = new File(fileChooser1.getSelectedFile().getAbsolutePath());
+            }
+             res = fileChooser1.showDialog(null,"Choose Invoice Line ");
+            if (res== JFileChooser.APPROVE_OPTION)
+            {
+                Path2 = new File(fileChooser1.getSelectedFile().getAbsolutePath());
+            }
+            fileOperations.loadFile(Path1,Path2);
             Read=false;
 
 
