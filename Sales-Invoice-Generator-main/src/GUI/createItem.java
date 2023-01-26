@@ -1,6 +1,5 @@
 package GUI;
 
-import Package1.Invoice;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +21,7 @@ public class createItem extends JFrame implements ActionListener {
         setLocation(new Point(500, 300));
         add(panel);
         setSize(new Dimension(400, 400));
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 
         ItemName = new JLabel("Item Name : ");
         ItemName.setBounds(50, 50, 100, 20);
@@ -67,12 +66,18 @@ public class createItem extends JFrame implements ActionListener {
         String Item = Item_T.getText().toString();
         String Price = Price_T.getText().toString();
         String Count = Count_T.getText().toString();
-        createInvoice.InvoiceTemp.addItems(Item,Integer.parseInt(Price),Integer.parseInt(Count));
+        int CurrentInvoice=0;
+        if (Home.selected)
+            CurrentInvoice = Home.RowIndex +1 ;
+        else CurrentInvoice = createInvoice.Selected_Invoice;
+
+        int ItemIndex= createInvoice.Invoices.get(CurrentInvoice).getItems().size();
+        createInvoice.Invoices.get(CurrentInvoice).addItems(Item,Integer.parseInt(Price),Integer.parseInt(Count));
         int total = Integer.parseInt(Price)*Integer.parseInt(Count);
-        Object[] newRecord = {'0' , Item, Integer.parseInt(Price) , Integer.parseInt(Count) ,total};
+        Object[] newRecord = {ItemIndex , Item, Integer.parseInt(Price) , Integer.parseInt(Count) ,total};
         Home.ItemModel.addRow(newRecord);
-        createInvoice.InvoiceTemp.calculateTotalPrice();
-        Home.InvoiceModel.setValueAt(createInvoice.InvoiceTemp.getTotal_price(),createInvoice.InvoiceTemp.Invoice_number-1,3);
+        createInvoice.Invoices.get(CurrentInvoice).calculateTotalPrice();
+        Home.InvoiceModel.setValueAt(createInvoice.Invoices.get(CurrentInvoice).getTotal_price(),CurrentInvoice-1,3);
         Item_T.setText(null);
         Price_T.setText(null);
         Count_T.setText(null);
@@ -84,11 +89,12 @@ public class createItem extends JFrame implements ActionListener {
     {
 
 
-        createInvoice.Invoices.get(InvoiceNumber-1).addItems(Item,Integer.parseInt(Price),Integer.parseInt(Count));
-        createInvoice.InvoiceTemp.addItems(Item,Integer.parseInt(Price),Integer.parseInt(Count));
+        //System.out.println("Load Invoice : " + (InvoiceNumber-1) );
+        createInvoice.Invoices.get(InvoiceNumber).addItems(Item,Integer.parseInt(Price),Integer.parseInt(Count));
+        //createInvoice.InvoiceTemp.addItems(Item,Integer.parseInt(Price),Integer.parseInt(Count));
         Object[] newRecord = {'0' , Item, Integer.parseInt(Price) , Integer.parseInt(Count) ,Integer.parseInt(Total)};
         Home.ItemModel.addRow(newRecord);
-        createInvoice.InvoiceTemp.calculateTotalPrice();
+        //createInvoice.InvoiceTemp.calculateTotalPrice();
        // Home.InvoiceModel.setValueAt(createInvoice.InvoiceTemp.getTotal_price(),createInvoice.InvoiceTemp.Invoice_number-1,3);
 
     }
@@ -102,6 +108,11 @@ public class createItem extends JFrame implements ActionListener {
 
         if (e.getSource().equals(Create)) {
             createItem();
+//            for (int i = 1 ; i< createInvoice.Invoices.size();++i)
+//            {
+//                System.out.println("Invoice Number : " + createInvoice.Invoices.get(i).getInvoiceNumber());
+//                createInvoice.Invoices.get(i).printItems();
+//            }
 
 
         } else if (e.getSource().equals(Cancel)) {

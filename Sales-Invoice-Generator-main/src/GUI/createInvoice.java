@@ -15,7 +15,7 @@ public class createInvoice extends JFrame implements ActionListener {
     private static JButton Create;
     private static JButton Cancel;
     public static ArrayList<Invoice> Invoices = new ArrayList<Invoice>();
-    public static int Selected_Invoice ;
+    public static int Selected_Invoice = 0 ;
     public  static Invoice InvoiceTemp;
 
     public createInvoice() {
@@ -55,21 +55,22 @@ public class createInvoice extends JFrame implements ActionListener {
         Cancel.setBackground(Color.BLACK);
         Cancel.addActionListener(this);
         panel.add(Cancel);
+        Invoices.add(null);
     }
 
-    public  void createInvoice() {
+    public  void addInvoice() {
         String Name = CustomerName_f.getText().toString();
         String date = Date_f.getText().toString();
-        System.out.println(Name);
         InvoiceTemp = new Invoice(Name,date);
-        InvoiceTemp.calculateTotalPrice();
-        Invoices.add(InvoiceTemp);
-        Object[] newRecord = { InvoiceTemp.Invoice_number, Name, date , InvoiceTemp.getTotal_price()};
+        Selected_Invoice =  InvoiceTemp.Invoice_number;
+        Invoices.add(Selected_Invoice,InvoiceTemp);
+        Object[] newRecord = { InvoiceTemp.Invoice_number, Name, date , 0};
         Home.InvoiceModel.addRow(newRecord);
-        Home.update(InvoiceTemp.Invoice_number,Date_f.getText(),CustomerName_f.getText(),InvoiceTemp.getTotal_price());
+        Home.update(InvoiceTemp.Invoice_number,Date_f.getText(),CustomerName_f.getText(),0);
         CustomerName_f.setText(null);
         Date_f.setText(null);
         Home.createInvoice.setVisible(false);
+        GUI.Home.ItemModel.setRowCount(0);
 
     }
     public static void loadInvoice(String Name , String date , Float Total)
@@ -88,7 +89,7 @@ public class createInvoice extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource().equals(Create)) {
-            createInvoice();
+            addInvoice();
 
         } else if (e.getSource().equals(Cancel)) {
             setVisible(false);

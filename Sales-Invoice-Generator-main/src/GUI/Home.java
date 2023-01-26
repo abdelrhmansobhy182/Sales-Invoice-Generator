@@ -21,7 +21,7 @@ public class Home extends JFrame implements ActionListener {
     public static DefaultTableModel ItemModel;
 
     public static JTable InvoiceTable ;
-    private String [] InvoiceTableCols = {"No." ,"Date" , "Customer" , "Total"};
+    private String [] InvoiceTableCols = {"No." ,"Customer" , "Date" , "Total"};
     private Object [][] InvoiceTableData = {
 
     } ;
@@ -45,16 +45,19 @@ public class Home extends JFrame implements ActionListener {
     private String [] ItemsTableCols = {"No." ,"Item Name" , "Item Price" , "Count" , "Item Total"};
     public static Object [][] ItemsTableData = {} ;
     JButton Add ;
+    JButton DeleteItem ;
     JButton Save ;
     JButton Load ;
     public static createInvoice  createInvoice = new createInvoice();
     public static createItem  createItem = new createItem();
     public static int RowIndex;
+    public static int ItemIndex;
     public FileOperations fileOperations = new FileOperations()  ;
     private boolean Read = true;
     JFileChooser fileChooser1;
     JFileChooser fileChooser2;
     File Path1,Path2;
+    public static boolean selected =false;
 
 
 
@@ -102,10 +105,12 @@ public class Home extends JFrame implements ActionListener {
 
 
         Save = new JButton("Save");
-        Add = new JButton("Add");
+        Add = new JButton("Add Item");
+        DeleteItem = new JButton("Delete Item");
         Load = new JButton("Load");
         Save.addActionListener(this);
         Add.addActionListener(this);
+        DeleteItem.addActionListener(this);
         Load.addActionListener(this);
         RightComponent.add(NumLabel);
         RightComponent.add(NumField);
@@ -119,6 +124,7 @@ public class Home extends JFrame implements ActionListener {
         RightPanal.add(RightComponent);
         RightPanal.add(new JScrollPane(ItemsTable));
         RightPanal.add(Add);
+        RightPanal.add(DeleteItem);
         RightPanal.add(Load);
         RightPanal.add(Save);
         add(RightPanal);
@@ -135,9 +141,22 @@ public class Home extends JFrame implements ActionListener {
             @Override
             public void mouseClicked(MouseEvent e) {
                 RowIndex =InvoiceTable.getSelectedRow();
+                System.out.println("Row index : "+ RowIndex);
                 removeTable();
-                getItems(RowIndex);
+                getItems(RowIndex+1);
+                selected= true;
+                GUI.createInvoice.Selected_Invoice=RowIndex+1;
 
+
+
+
+            }
+        });
+        ItemsTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                ItemIndex = ItemsTable.getSelectedRow();
+                System.out.println("Item index : "+ ItemIndex);
 
 
             }
@@ -153,7 +172,7 @@ public class Home extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
 
-        if (e.getSource().equals(Add))
+        if (e.getSource().equals(Add) && GUI.createInvoice.Selected_Invoice!=0)
         {
             createItem.setVisible(true);
 
@@ -161,12 +180,7 @@ public class Home extends JFrame implements ActionListener {
         if (e.getSource().equals(Save))
         {
             Read=true;
-
-            for (int i = 0;i<Invoice.Invoice_number;++i)
-            {
-                System.out.println(GUI.createInvoice.Invoices.get(i).getCustomerName());
-                fileOperations.saveFile(GUI.createInvoice.Invoices.get(i) ,Invoice.Invoice_number );
-            }
+            FileOperations.saveFile();
 
         }
         else if (e.getSource().equals(Load) && Read==true)
@@ -202,6 +216,11 @@ public class Home extends JFrame implements ActionListener {
             deleteInvoice(RowIndex);
 
         }
+        else if (e.getSource().equals(DeleteItem) )
+        {
+            deleteItem(ItemIndex);
+
+        }
 
 
 
@@ -215,9 +234,8 @@ public class Home extends JFrame implements ActionListener {
     {
 
         Invoice I = GUI.createInvoice.Invoices.get(Index);
-        GUI.createInvoice.InvoiceTemp=I;
-        int Num=I.Invoice_number;
-        NumField.setText(Integer.toString(Num));
+        NumField.setText(Integer.toString(Index+1));
+        TotalField.setText(Float.toString(I.getTotalPrice()));
         ArrayList<Item> Items = I.getItems();
         for (int i = 0 ; i<Items.size();++i)
         {
@@ -226,9 +244,10 @@ public class Home extends JFrame implements ActionListener {
             int ItemCount= Items.get(i).getCount();
             int ItemTotal= Items.get(i).getTotal();
             Object[] newRecord = {i , ItemName, ItemPrice , ItemCount ,ItemTotal};
+
             ItemModel.addRow(newRecord);
         }
-        update(Num,I.getDate(),I.getCustomerName(),I.getTotalPrice());
+        update(Index+1,I.getDate(),I.getCustomerName(),I.getTotal_price());
 
 
 
@@ -244,11 +263,21 @@ public class Home extends JFrame implements ActionListener {
     }
     public void deleteInvoice(int Index)
     {
-        GUI.createInvoice.Invoices.remove(Index);
+        GUI.createInvoice.Invoices.remove(Index+1);
         InvoiceModel.removeRow(Index);
 
+    }
+    public void deleteItem(int index)
+    {
+        int SelectInvoice= GUI.createInvoice.Selected_Invoice;
+        System.out.println("selected : " + SelectInvoice );
+        System.out.println("Index : " + index );
+        GUI.createInvoice.Invoices.get(SelectInvoice).Items.remove(index);
+        GUI.createInvoice.Invoices.get(SelectInvoice).calculateTotalPrice();
+       InvoiceModel.setValueAt(createInvoice.Invoices.get(SelectInvoice).getTotal_price(),SelectInvoice-1,3);
 
 
+        ItemModel.removeRow(index);
     }
 
 }
