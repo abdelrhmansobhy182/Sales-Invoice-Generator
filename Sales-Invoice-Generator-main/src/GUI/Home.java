@@ -200,6 +200,7 @@ public class Home extends JFrame implements ActionListener {
             }
             fileOperations.loadFile(Path1,Path2);
             Read=false;
+            ItemModel.setRowCount(0);
 
 
 
